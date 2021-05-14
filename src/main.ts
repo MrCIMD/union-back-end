@@ -16,7 +16,7 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
   await app.listen(AppModule.PORT);
 
-  console.log(`[ Menu It Api Documentation ] host run in ${AppModule.HTTP}://${AppModule.HOST}:${AppModule.PORT}/docs`)
+  console.log(`[ Menu It Docs ] host run in ${AppModule.HTTP}://${AppModule.HOST}:${AppModule.PORT}/docs`)
   console.log(`[ Menu It ] host run in ${AppModule.HTTP}://${AppModule.HOST}:${AppModule.PORT}/api/`)
 }
 bootstrap();

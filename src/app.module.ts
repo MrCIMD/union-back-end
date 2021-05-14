@@ -5,10 +5,12 @@ import { ConfigService } from "./common/config/config.service";
 import { Configuration } from "./common/config/config.keys";
 // Modules
 import { ConfigModule } from "./common/config/config.module";
+import { DatabaseModule } from "./common/database/database.module";
 
 @Module({
   imports: [
-    ConfigModule
+    ConfigModule,
+    DatabaseModule
   ],
 })
 export class AppModule {
