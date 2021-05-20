@@ -45,15 +45,6 @@ export class AuthService extends TypeOrmCrudService<User> {
     return await this.generateToken(user);
   }
 
-  public async changePassword(user: User): Promise<User> {
-    const { password } = user;
-    const salt = await genSalt(10);
-    user.password = await hash(password, salt);
-    await this.repo.update(user.id, user);
-    delete user.password;
-    return user;
-  }
-
   public async renewToken(email: string): Promise<IToken> {
     const user: User = await this.repo.findOne({ email }, { relations: ['profile', 'role'] });
     if (user) {
@@ -61,11 +52,6 @@ export class AuthService extends TypeOrmCrudService<User> {
     } else {
       throw new UnauthorizedException();
     }
-  }
-
-  public async validateToken(token: string): Promise<User> {
-    const decode: any = this.jwt.decode(token);
-    return await this.repo.findOne({ email: decode.email }, { relations: ['profile', 'role'] });
   }
 
   private async generateToken(user: User): Promise<IToken> {

@@ -58,20 +58,9 @@ export class AuthController implements CrudController<User> {
     return this.service.signin(authDto);
   }
 
-  @Post("change-password")
-  @UsePipes(ValidationPipe)
-  public async changePassword(@Body() user: User): Promise<User> {
-    return this.service.changePassword(user);
-  }
-
   @Post("renew-token")
   public async renewToken(@Body() d: { email: string }): Promise<IToken> {
     return this.service.renewToken(d.email);
-  }
-
-  @Post("validate-token")
-  public async validateToken(@Body() d: { encode: string }): Promise<User> {
-    return this.service.validateToken(d.encode);
   }
 
   @Delete("soft-deleted/:id")
