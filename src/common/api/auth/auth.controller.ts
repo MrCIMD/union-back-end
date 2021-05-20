@@ -64,11 +64,6 @@ export class AuthController implements CrudController<User> {
     return this.service.changePassword(user);
   }
 
-  @Post("forgot-password")
-  public async forgotPassword(@Body() body: { email: string, host: string }): Promise<IToken> {
-    return this.service.forgot(body.email, body.host);
-  }
-
   @Post("renew-token")
   public async renewToken(@Body() d: { email: string }): Promise<IToken> {
     return this.service.renewToken(d.email);

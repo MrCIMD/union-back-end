@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 
@@ -6,15 +6,12 @@ import { compare, genSalt, hash } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 
 import { IJwt, IToken } from './interface';
-import { AuthDto } from './dto/auth.dtb';
 import { User } from '../../entities';
-import { MailerService } from '@nestjs-modules/mailer';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService extends TypeOrmCrudService<User> {
-  constructor(@InjectRepository(User) public repo: Repository<User>, private readonly jwt: JwtService,
-              private readonly mailerService: MailerService) {
+  constructor(@InjectRepository(User) public repo: Repository<User>, private readonly jwt: JwtService) {
     super(repo);
   }
 
@@ -31,7 +28,7 @@ export class AuthService extends TypeOrmCrudService<User> {
     return await this.generateToken(auth);
   }
 
-  public async signin(authDto: AuthDto): Promise<IToken> {
+  public async signin(authDto: User): Promise<IToken> {
     const { email, password } = authDto;
     const user = await this.repo.findOne({
       where: [{ email }],
@@ -66,18 +63,6 @@ export class AuthService extends TypeOrmCrudService<User> {
     }
   }
 
-  public async forgot(email: string, host: string): Promise<any> {
-    const user = await this.repo.findOne({ where: [{ email }], relations: ['profile', 'role'] });
-    const token: IToken = await this.generateToken(user);
-    const resp = await this.mailerService.sendMail({
-      to: email, from: 'auth@munyaal.app',
-      subject: 'Recuperacion de contraseña',
-      template: process.cwd() + '/src/common/mailer/template/forgot.hbs',
-      context: { email, host, token },
-    });
-    return resp;
-  }
-
   public async validateToken(token: string): Promise<User> {
     const decode: any = this.jwt.decode(token);
     return await this.repo.findOne({ email: decode.email }, { relations: ['profile', 'role'] });
@@ -87,7 +72,6 @@ export class AuthService extends TypeOrmCrudService<User> {
     const payload: IJwt = {
       id: user.id,
       email: user.email,
-      role: user.role,
     };
     const token = this.jwt.sign(payload);
     await this.repo.update(user.id, { rememberToken: token });

@@ -15,9 +15,9 @@ export class Action extends Base {
   @ManyToOne(() => Icon, role => role.actions, { nullable: true })
   icon: Icon;
 
-  @ManyToMany(() => Permission, permission => permission.actions, { cascade: true })
+  @ManyToMany(() => Permission, permission => permission.actions, { nullable: true })
   permission: Permission[];
 
-  @ManyToMany(() => Route, route => route.actions, { cascade: true })
+  @ManyToMany(() => Route, route => route.actions, { nullable: true })
   routes: Route[];
 }
